@@ -1,0 +1,34 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background: #111;
+}
+#lightCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  display: block;
+}
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  top: 30vh;
+  color: #fff;
+  text-shadow: 0 0 20px #00ffe7, 0 0 40px #ff00c8;
+}
+h1 {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.1em;
+}
+p {
+  font-size: 1.5em;
+  opacity: 0.8;
+}
