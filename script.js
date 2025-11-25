@@ -1,42 +1,129 @@
-const canvas = document.getElementById('lightCanvas');
-const ctx = canvas.getContext('2d');
-let w, h;
-function resize() {
-  w = window.innerWidth;
-  h = window.innerHeight;
-  canvas.width = w;
-  canvas.height = h;
-}
-window.addEventListener('resize', resize);
-resize();
 
-const lights = Array.from({length: 8}, (_, i) => ({
-  x: Math.random() * w,
-  y: Math.random() * h,
-  r: 120 + Math.random() * 80,
-  color: `hsl(${Math.random()*360},100%,60%)`,
-  angle: Math.random() * Math.PI * 2,
-  speed: 0.5 + Math.random()
-}));
 
-function draw() {
-  ctx.clearRect(0, 0, w, h);
-  for (const light of lights) {
-    light.x += Math.cos(light.angle) * light.speed;
-    light.y += Math.sin(light.angle) * light.speed;
-    light.angle += (Math.random()-0.5)*0.02;
-    if (light.x < 0 || light.x > w) light.angle = Math.PI - light.angle;
-    if (light.y < 0 || light.y > h) light.angle = -light.angle;
-    const grad = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, light.r);
-    grad.addColorStop(0, light.color);
-    grad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.beginPath();
-    ctx.arc(light.x, light.y, light.r, 0, Math.PI*2);
-    ctx.fillStyle = grad;
-    ctx.fill();
+const terminalArea = document.getElementById('terminal-area');
+
+
+const logs = [
+  '$ sudo apt update',
+  'Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease',
+  'Hit:2 http://archive.ubuntu.com/ubuntu focal-updates InRelease',
+  'Hit:3 http://archive.ubuntu.com/ubuntu focal-backports InRelease',
+  'Hit:4 http://security.ubuntu.com/ubuntu focal-security InRelease',
+  'Reading package lists... Done',
+  'Building dependency tree',
+  'Reading state information... Done',
+  '$ sudo apt install python3-pytest',
+  'Reading package lists... Done',
+  'Building dependency tree',
+  'Reading state information... Done',
+  'python3-pytest is already the newest version (5.4.3-1).',
+  '$ git clone https://github.com/example/project.git',
+  'Cloning into \'project\'...',
+  'remote: Enumerating objects: 120, done.',
+  'remote: Counting objects: 100% (120/120), done.',
+  'remote: Compressing objects: 100% (80/80), done.',
+  'Receiving objects: 100% (120/120), 1.23 MiB | 2.00 MiB/s, done.',
+  'Resolving deltas: 100% (60/60), done.',
+  '$ cd project',
+  '$ pip install -r requirements.txt',
+  'Collecting numpy',
+  'Collecting requests',
+  'Collecting pytest',
+  'Collecting flask',
+  'Collecting pandas',
+  'Collecting sqlalchemy',
+  'Collecting gunicorn',
+  'Collecting coverage',
+  'Installing collected packages: numpy, requests, pytest, flask, pandas, sqlalchemy, gunicorn, coverage',
+  'Successfully installed numpy-1.21.0 pytest-6.2.4 requests-2.25.1 flask-2.0.1 pandas-1.3.0 sqlalchemy-1.4.18 gunicorn-20.1.0 coverage-5.5',
+  '$ pytest tests/',
+  '============================= test session starts ==============================',
+  'platform linux -- Python 3.8.10, pytest-6.2.4',
+  'rootdir: /home/ubuntu/project',
+  'collected 50 items',
+  '',
+  'test_math.py ..........                                      [ 20%]',
+  'test_utils.py .........                                      [ 40%]',
+  'test_api.py ..........                                       [ 60%]',
+  'test_db.py ..........                                        [ 80%]',
+  'test_integration.py ..........                               [100%]',
+  '',
+  '=========================== short test summary info ===========================',
+  'PASSED test_math.py::test_add',
+  'PASSED test_math.py::test_subtract',
+  'PASSED test_math.py::test_multiply',
+  'PASSED test_math.py::test_divide',
+  'PASSED test_utils.py::test_add_positive',
+  'PASSED test_utils.py::test_subtract_positive',
+  'PASSED test_utils.py::test_multiply_positive',
+  'PASSED test_utils.py::test_divide_positive',
+  'PASSED test_utils.py::test_add_negative',
+  'PASSED test_utils.py::test_subtract_negative',
+  'PASSED test_utils.py::test_multiply_negative',
+  'PASSED test_utils.py::test_divide_negative',
+  'PASSED test_utils.py::test_edge_cases',
+  'PASSED test_utils.py::test_large_numbers',
+  'PASSED test_utils.py::test_small_numbers',
+  'PASSED test_utils.py::test_zero',
+  'PASSED test_utils.py::test_float',
+  'PASSED test_utils.py::test_string_input',
+  'PASSED test_api.py::test_get',
+  'PASSED test_api.py::test_post',
+  'PASSED test_api.py::test_put',
+  'PASSED test_api.py::test_delete',
+  'PASSED test_db.py::test_connect',
+  'PASSED test_db.py::test_insert',
+  'PASSED test_db.py::test_update',
+  'PASSED test_db.py::test_delete',
+  'PASSED test_integration.py::test_full_flow',
+  'PASSED test_integration.py::test_error_handling',
+  '',
+  '============================== 50 passed in 1.12s ==============================',
+  '$ coverage run -m pytest',
+  '$ coverage report',
+  'Name                Stmts   Miss  Cover',
+  '---------------------------------------',
+  'math.py                20      0   100%',
+  'utils.py               30      0   100%',
+  'api.py                 40      0   100%',
+  'db.py                  50      0   100%',
+  'integration.py         60      0   100%',
+  '---------------------------------------',
+  'TOTAL                 200      0   100%',
+  '$ gunicorn app:app --workers 4 --bind 0.0.0.0:8000',
+  '[2025-11-25 12:00:00] Starting gunicorn 20.1.0',
+  '[2025-11-25 12:00:00] Listening at: http://0.0.0.0:8000 (12345)',
+  '[2025-11-25 12:00:00] Using worker: sync',
+  '[2025-11-25 12:00:00] Booting worker with pid: 12346',
+  '[2025-11-25 12:00:00] Booting worker with pid: 12347',
+  '[2025-11-25 12:00:00] Booting worker with pid: 12348',
+  '[2025-11-25 12:00:00] Booting worker with pid: 12349',
+  '$ curl http://localhost:8000/api/status',
+  '{"status": "ok", "uptime": "3600s"}',
+  '$ git status',
+  'On branch main',
+  'Your branch is up to date with \'origin/main\'.',
+  'nothing to commit, working tree clean',
+  '$ exit',
+  'logout',
+  '[Process completed]',
+];
+
+let buffer = [];
+let logIndex = 0;
+
+function printLog() {
+  if (logIndex < logs.length) {
+    buffer.push(logs[logIndex]);
+    terminalArea.textContent = buffer.join('\n');
+    terminalArea.scrollTop = terminalArea.scrollHeight;
+    logIndex++;
+    setTimeout(printLog, 70 + Math.random()*80);
+  } else {
+    buffer = [];
+    logIndex = 0;
+    setTimeout(printLog, 400);
   }
-  ctx.globalCompositeOperation = 'source-over';
-  requestAnimationFrame(draw);
 }
-draw();
+
+printLog();
