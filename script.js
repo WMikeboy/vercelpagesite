@@ -104,26 +104,18 @@ const logs = [
   'On branch main',
   'Your branch is up to date with \'origin/main\'.',
   'nothing to commit, working tree clean',
-  '$ exit',
-  'logout',
-  '[Process completed]',
 ];
 
 let buffer = [];
 let logIndex = 0;
 
 function printLog() {
-  if (logIndex < logs.length) {
-    buffer.push(logs[logIndex]);
-    terminalArea.textContent = buffer.join('\n');
-    terminalArea.scrollTop = terminalArea.scrollHeight;
-    logIndex++;
-    setTimeout(printLog, 70 + Math.random()*80);
-  } else {
-    buffer = [];
-    logIndex = 0;
-    setTimeout(printLog, 400);
-  }
+  buffer.push(logs[logIndex]);
+  if (buffer.length > 200) buffer.shift();
+  terminalArea.textContent = buffer.join('\n');
+  terminalArea.scrollTop = terminalArea.scrollHeight;
+  logIndex = (logIndex + 1) % logs.length;
+  setTimeout(printLog, 120 + Math.random()*80);
 }
 
 printLog();
